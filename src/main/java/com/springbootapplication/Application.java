@@ -14,6 +14,7 @@ import java.util.Set;
 @SpringBootApplication
 @EnableTransactionManagement
 public class Application implements InitializingBean {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

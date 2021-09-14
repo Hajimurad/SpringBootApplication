@@ -75,7 +75,6 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         User user = userDAO.findByUsername(username);
 
         if(user == null){
-
             throw new UsernameNotFoundException("Invalid username or password");
         }
         return user;

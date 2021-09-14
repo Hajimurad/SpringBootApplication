@@ -59,7 +59,6 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-//    @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.REFRESH})
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.MERGE})
     @JoinTable (name = "user_roles",
             joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
