@@ -18,14 +18,12 @@ import java.util.regex.Pattern;
 public class UserServiceImpl extends AbstractService<User> implements UserService, UserDetailsService {
 
     private final UserDAO userDAO;
-    private final RoleDAO roleDAO;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl (UserDAO userDAO, @Lazy RoleDAO roleDAO, @Lazy PasswordEncoder passwordEncoder) {
+    public UserServiceImpl (UserDAO userDAO, @Lazy PasswordEncoder passwordEncoder) {
         super(userDAO);
         this.userDAO = userDAO;
-        this.roleDAO = roleDAO;
         this.passwordEncoder = passwordEncoder;
     }
 
