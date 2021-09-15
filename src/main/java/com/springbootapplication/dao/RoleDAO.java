@@ -4,9 +4,13 @@ import com.springbootapplication.entity.Role;
 
 import java.util.Set;
 
-public interface RoleDAO extends GenericDAO<Role> {
+public interface RoleDAO {
 
-    Role findByRole(String role);
     Set<Role> findAllRoles();
-    Set<Role> rolesSetFromArray(String[] roleName);
+
+    Role readById(Long id);
+    Role findByRole(String role);
+    Role update(Role role);
+
+    void deleteById(Long id);
 }

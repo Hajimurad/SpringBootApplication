@@ -1,23 +1,27 @@
 package com.springbootapplication.dao;
 
 import com.springbootapplication.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class UserDaoImpl extends AbstractDAO<User> implements UserDAO{
+public class UserDaoImpl implements UserDAO{
 
-    private final EntityManager entityManager;
-
-    public UserDaoImpl(EntityManager entityManager) {
-        super(User.class, entityManager);
-        this.entityManager = entityManager;
+    public UserDaoImpl() {
     }
 
+    @PersistenceContext
+    private  EntityManager entityManager;
+
+    @Autowired
+    public UserDaoImpl(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public User findByUsername(String username) {
@@ -37,6 +41,39 @@ public class UserDaoImpl extends AbstractDAO<User> implements UserDAO{
             return null;
         }
     }
+    @Override
+    public User create(User user) {
+        User userCont = entityManager.merge(user);
+        entityManager.persist(userCont);
+        return user;
+    }
+
+    @Override
+    public User readById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID does not stand for object");
+        }
+        return entityManager.find(User.class, id);
+    }
+
+    @Override
+    public User update(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Entity has not been found");
+        }
+
+        return entityManager.merge(user);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID has not been found while removing object");
+        }
+        User user = entityManager.find(User.class, id);
+        entityManager.remove(user);
+    }
+
 
     @Override
     public List<User> findAllUsers() {

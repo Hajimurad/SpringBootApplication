@@ -64,7 +64,8 @@
                                         <td th:text="${user.lastName}"></td>
                                         <td th:text="${user.age}"></td>
                                         <td th:text="${user.username}"></td>
-                                        <td th:text="${user.getRoles() + ''}"></td>
+                                        <td th:text="${#strings.arrayJoin(user.roles, ' ')}"></td>
+
                                         <td>
                                             <a role="button"
                                                class="btn btn-primary btn-sm"
@@ -141,18 +142,21 @@
                                                                        name="password"
                                                                        id="passwd"
                                                                        placeholder="Password"
-                                                                       th:value="${user.password}"
-                                                                       readonly>
+                                                                       th:value="${user.password}">
 
-                                                                <label for="update_roles"
-                                                                       class="form-label mb-0 fw-bold">Role</label>
-                                                                <select id="update_roles"
-                                                                        class="form-select form-select-sm mb-3"
+
+                                                                <label for="editRole">Role</label>
+                                                                <select class="form-control form-control-sm"
+                                                                        id="editRole"
+                                                                        name="setRoles"
                                                                         multiple
-                                                                        size="2"
-                                                                        name="setRole">
-                                                                    <option value="ADMIN">ADMIN</option>
-                                                                    <option value="USER">USER</option>
+                                                                        size="2">
+                                                                    <option th:each="role : ${roles}"
+                                                                            th:value="${role.id}"
+                                                                            th:text="${role.role}"
+                                                                            th:selected="${user.roles.contains(role)}">
+                                                                    </option>
+                                                                </select>
                                                                 </select>
                                                             </form>
                                                         </div>
@@ -168,7 +172,8 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td><td>
+                                        </td>
+                                        <td>
                                         <a role="button"
                                            class="btn btn-danger btn-sm"
                                            data-toggle="modal"
@@ -251,8 +256,10 @@
                                                                     multiple
                                                                     size="2"
                                                                     name="setRole">
-                                                                <option value="USER">USER</option>
-                                                                <option value="ADMIN">ADMIN</option>
+                                                                <div th:each="role : ${roles}">
+                                                                    <option th:text="${role.role}"
+                                                                            th:value="${role.id}"></option>
+                                                                </div>
                                                             </select>
                                                         </form>
                                                     </div>
@@ -282,36 +289,55 @@
                                       style="width: 300px;" th:action="@{admin/create}" method="post" th:object="${addUser}">
 
                                     <label for="newFirstName">First name</label>
-                                    <input class="form-control form-control-sm mb-3" type="text"
-                                           name="firstName" id="newFirstName" placeholder="First name" required autofocus>
+                                    <input class="form-control form-control-sm mb-3"
+                                           type="text"
+                                           name="firstName"
+                                           id="newFirstName"
+                                           placeholder="First name"
+                                           required autofocus>
 
                                     <label for="newLastName">Last name</label>
-                                    <input class="form-control form-control-sm mb-3" type="text"
-                                           name="lastName" id="newLastName" placeholder="Last name">
+                                    <input class="form-control form-control-sm mb-3"
+                                           type="text"
+                                           name="lastName"
+                                           id="newLastName"
+                                           placeholder="Last name">
 
                                     <label for="newAge">Age</label>
-                                    <input class="form-control form-control-sm mb-3" type="text"
-                                           name="age" id="newAge" placeholder="Age" required>
+                                    <input class="form-control form-control-sm mb-3"
+                                           type="text"
+                                           name="age"
+                                           id="newAge"
+                                           placeholder="Age">
 
                                     <label for="newUsername">Email</label>
-                                    <input class="form-control form-control-sm mb-3" type="email"
-                                           name="username" id="newUsername" placeholder="Email" required>
+                                    <input class="form-control form-control-sm mb-3"
+                                           type="email"
+                                           name="username"
+                                           id="newUsername"
+                                           placeholder="Email"
+                                           required>
 
                                     <label for="newPasswd">Password</label>
-                                    <input class="form-control form-control-sm mb-3" type="password"
-                                           name="password" id="newPasswd" placeholder="Password" required>
+                                    <input class="form-control form-control-sm mb-3"
+                                           type="password"
+                                           name="password"
+                                           id="newPasswd"
+                                           placeholder="Password"
+                                           required>
 
-                                    <label for="edit_roles"
-                                           class="form-label mb-0 fw-bold">Role</label>
-                                    <select id="edit_roles"
-                                            class="form-select form-select-sm mb-3"
+                                    <label for="newRoles">Role</label>
+                                    <select class="form-control form-control-sm mb-3"
+                                            id="newRoles"
+                                            name="setRoles"
                                             multiple
-                                            size="2"
-                                            name="setRole">
-                                        <option value="USER">USER</option>
-                                        <option value="ADMIN">ADMIN</option>
+                                            size="2" required>
+                                        <option th:each="role : ${roles}"
+                                                th:value="${role.id}"
+                                                th:text="${role.role}">
+                                        </option>
                                     </select>
-                                    <button class="btn btn-success" type="submit">Add new user</button>
+                                    <button class="btn btn-success mb-3" type="submit">Add new user</button>
                                 </form>
                             </div>
                         </div>

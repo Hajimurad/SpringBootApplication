@@ -1,5 +1,6 @@
 package com.springbootapplication.controller;
 
+import com.springbootapplication.entity.Role;
 import com.springbootapplication.entity.User;
 import com.springbootapplication.service.RoleService;
 import com.springbootapplication.service.UserService;
@@ -11,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Controller
 public class UserController {
@@ -42,32 +45,34 @@ public class UserController {
         User user = userService.findByUsername(principal.getName());
         model.addAttribute("user", user);
         model.addAttribute("users", userService.findAllUsers());
-        model.addAttribute("roles", user.getRoles());
+        model.addAttribute("roles", roleService.findAllRoles());
         model.addAttribute("addUser", new User());
         return "admin";
     }
 
     @PostMapping("admin/create")
-    public String create(@ModelAttribute("addUser") @Valid User user, BindingResult bindingResult,
-                         @RequestParam String[] setRole) {
+    public String create(@ModelAttribute("addUser") User user,
+                         @RequestParam(value = "setRoles", required = false) Long[] setRoles)  {
 
-        if (bindingResult.hasErrors()) {
-            return "redirect:/create";
+
+        if (setRoles != null) {
+            user.setRoles(roleService.rolesSetFromArray(setRoles));
+
+        } else {
+            user.setRoles(Set.of(roleService.readById(1L)));
         }
-        user.setRoles(roleService.rolesSetFromArray(setRole));
         userService.create(user);
         return "redirect:/admin";
     }
 
     @PostMapping("admin/update")
-    public String update(@ModelAttribute("addUser") @Valid User user, BindingResult bindingResult,
-                         @RequestParam(required = false) String[] setRole) {
+    public String update(@ModelAttribute("addUser") User user,
+                         @RequestParam(value = "setRoles", required = false) Long[] setRoles)  {
 
-        if (bindingResult.hasErrors()) {
-            return "redirect:/create";
+        if (setRoles != null) {
+            user.setRoles(roleService.rolesSetFromArray(setRoles));
         }
 
-        user.setRoles(roleService.rolesSetFromArray(setRole));
         userService.update(user);
         return "redirect:/admin";
     }

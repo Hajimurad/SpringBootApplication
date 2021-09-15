@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
-
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +17,7 @@ public class Role implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ROLE_ID")
+    @Column(name = "ROLE_ID", nullable = false)
     private Long id;
 
     @Column(name = "ROLE")
@@ -28,16 +27,15 @@ public class Role implements GrantedAuthority {
         this.role = role;
     }
 
-    public Role(Long id, String role) {
-        this.id = id;
-        this.role = role;
+    public Long getId() {
+        return id;
     }
 
     public String getRole() {
         return role;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "roles")
+    @ManyToMany(mappedBy = "roles", fetch = FetchType.EAGER)
     private Set<User> users;
 
     @Override

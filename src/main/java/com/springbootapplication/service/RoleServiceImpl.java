@@ -5,42 +5,54 @@ import com.springbootapplication.entity.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
-@Transactional(readOnly = true)
-public class RoleServiceImpl extends AbstractService<Role> implements RoleService {
+@Transactional
+public class RoleServiceImpl implements RoleService {
 
     private final RoleDAO roleDAO;
 
     @Autowired
     public RoleServiceImpl(RoleDAO roleDAO) {
-        super(roleDAO);
         this.roleDAO = roleDAO;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Role findByRole(String role) {
         return roleDAO.findByRole(role);
     }
 
     @Override
-    public Set<Role> findAllRoles() {
+    @Transactional(readOnly = true)
+    public Set<Role> findAllRoles(){
         return roleDAO.findAllRoles();
     }
 
     @Override
-    public Set<Role> rolesSetFromArray(String[] rolesArr) {
-        return roleDAO.rolesSetFromArray(rolesArr);
+    @Transactional(readOnly = true)
+    public Role readById(Long id) {
+       return roleDAO.readById(id);
     }
 
     @Override
-    public Role create(Role role) {
+    public Role update(Role role) {
+        return roleDAO.update(role);
+    }
 
-        if(findAllRoles().contains(role)){
-            System.out.println("Role " + role + " already exists");
+    @Override
+    public void deleteById(Long id) {
+        roleDAO.deleteById(id);
+    }
+
+    public Set<Role> rolesSetFromArray(Long[] roleArr) {
+
+        Set<Role> roles = new HashSet<>();
+        for (Long id : roleArr) {
+            roles.add(readById(id));
         }
-
-        return roleDAO.create(role);
+        return roles;
     }
 }

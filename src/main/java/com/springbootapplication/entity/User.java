@@ -11,6 +11,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Table(name = "users_table")
@@ -18,7 +19,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
+    @Column(name = "USER_ID", nullable = false)
     private Long id;
 
     @Size(min = 6, max = 64)
@@ -37,32 +38,17 @@ public class User implements UserDetails {
     @Column(name = "EMAIL", nullable = false, length = 45, unique = true)
     private String username;
 
-    @Column(name = "AGE", nullable = false, length = 3)
+    @Size(max = 3)
+    @Column(name = "AGE", length = 3)
     private Integer age;
 
-    public User(Long id, String password, String firstName, String lastName, String username, Integer age, Set<Role> roles) {
-        this.id = id;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.age = age;
-        this.roles = roles;
-    }
-
-    public User(String password, String firstName, String lastName, String username, Integer age, Set<Role> roles) {
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.username = username;
-        this.age = age;
-        this.roles = roles;
-    }
 
     @ManyToMany(fetch = FetchType.EAGER,  cascade = {CascadeType.MERGE})
     @JoinTable (name = "user_roles",
             joinColumns = {@JoinColumn(name = "USER_ID")}, inverseJoinColumns = {@JoinColumn(name = "ROLE_ID")})
     private Set<Role> roles;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

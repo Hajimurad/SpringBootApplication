@@ -1,6 +1,5 @@
 package com.springbootapplication.service;
 
-import com.springbootapplication.dao.RoleDAO;
 import com.springbootapplication.dao.UserDAO;
 import com.springbootapplication.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +14,14 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
-public class UserServiceImpl extends AbstractService<User> implements UserService, UserDetailsService {
+@Transactional
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDAO userDAO;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl (UserDAO userDAO, @Lazy PasswordEncoder passwordEncoder) {
-        super(userDAO);
         this.userDAO = userDAO;
         this.passwordEncoder = passwordEncoder;
     }
@@ -58,14 +57,27 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public User readById(Long id) {
+       return userDAO.readById(id);
+    }
+
+    @Override
     public User update(User user) {
 
         if (userDAO.readById(user.getId()) == null) {
             throw new IllegalArgumentException("User has not been found");
         }
+        if(user.getPassword() != null) {
+            injectCrypt(user);
+        }
 
-        injectCrypt(user);
         return userDAO.update(user);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userDAO.deleteById(id);
     }
 
     @Override
